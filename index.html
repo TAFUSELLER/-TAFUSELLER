@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>⊕TAFU SELLERS' ADMINISTRATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass-bg: rgba(0,0,0,0.5);
+      --button-bg: #8b0000;
+      --button-glow: #b30000;
+    }
+    body { margin:0; font-family:'Poppins',sans-serif; background:#121212; color:white; text-align:center; }
+    .title { margin-top:40px; font-size:2.5em; font-family:'Orbitron',sans-serif; font-weight:bold; }
+    .title .icon{color:darkred;} .title .ta{color:white;} .title .fu{color:red;}
+    .title .admin{color:black;background:white;padding:4px 10px;border-radius:5px;margin-left:8px;}
+    .byline{font-size:0.9em;color:#bbbbbb;margin-top:6px;}
+    .category{margin-top:30px;font-size:1.4em;font-weight:bold;padding:12px;color:white;
+              backdrop-filter:blur(6px);background:rgba(255,255,255,0.05);border-radius:10px;
+              width:fit-content;margin:auto;box-shadow:0 0 10px rgba(255,255,255,0.08);
+              display:flex;align-items:center;gap:10px;}
+    .category img{height:28px;}
+    .seller-box{background:var(--glass-bg);backdrop-filter:blur(12px);
+                padding:20px;margin:20px auto;width:90%;max-width:500px;border-radius:14px;
+                position:relative;overflow:hidden;box-shadow:0 0 14px rgba(0,0,0,0.5);
+                transition:transform .35s ease, box-shadow .35s ease;}
+    .seller-box::before{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;
+                background:radial-gradient(circle at center,rgba(255,255,255,0.12),transparent 60%);
+                transform:rotate(25deg);transition:all .8s ease;z-index:1;}
+    .seller-box:hover::before{top:0;left:0;}
+    .seller-box:hover{transform:translateY(-6px);box-shadow:0 0 25px var(--button-glow);}
+    .seller-name{font-size:1.4em;font-weight:bold;color:white;position:relative;z-index:2;}
+    .rate{margin:15px 0;color:#fff;white-space:pre-line;position:relative;z-index:2;}
+    .contact-button{display:inline-block;margin-top:10px;padding:10px 22px;background:var(--button-bg);
+                    color:white;font-weight:600;border-radius:9px;text-decoration:none;
+                    position:relative;overflow:hidden;box-shadow:0 0 12px var(--button-glow);
+                    transition:transform 0.3s ease, background 0.3s ease;z-index:2;}
+    .contact-button:hover{background:#a10000;transform:scale(1.06);}
+    .contact-button::before{content:"";position:absolute;top:50%;left:50%;width:260%;height:260%;
+                    transform:translate(-50%,-50%) rotate(0deg);
+                    background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 60%);
+                    animation:spinGlow 5.5s linear infinite;z-index:1;}
+    .contact-button span{position:relative;z-index:2;}
+    @keyframes spinGlow{0%{transform:translate(-50%,-50%) rotate(0deg);}100%{transform:translate(-50%,-50%) rotate(360deg);}}
+    footer{margin-top:40px;padding:40px 20px;background:#000;color:#888;font-size:0.9em;border-top:1px solid #444;}
+  </style>
+</head>
+<body>
+  <div class="title"><span class="icon">⊕</span><span class="ta">TA</span><span class="fu">FU</span> SELLERS' <span class="admin">ADMINISTRATION</span></div>
+  <div class="byline">By - Fuad Hasan Sowrov</div>
+
+  <div id="seller-container"></div>
+
+  <footer>© ⊕TAFU SELLERS' ADMINISTRATION</footer>
+
+  <script>
+    const sheetID = '1-pxuQN5ObQGK22PRMPK2KH73ipX4EoE1FjJmu_qZISI';
+    const url = \`https://docs.google.com/spreadsheets/d/\${sheetID}/gviz/tq?&tq=\${encodeURIComponent('Select *')}\`;
+
+    fetch(url)
+      .then(res => res.text())
+      .then(txt => {
+        const json = JSON.parse(txt.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        const container = document.getElementById('seller-container');
+        let lastCat = '';
+
+        rows.forEach(r => {
+          const cat = r.c[0]?.v || '';
+          const icon = r.c[1]?.v || '';
+          const name = r.c[2]?.v || '';
+          const rate = r.c[3]?.v || '';
+          const link = r.c[4]?.v || '#';
+
+          if (cat !== lastCat) {
+            container.innerHTML += \`<div class="category"><img src="\${icon}" alt=""> \${cat.toUpperCase()} SELLERS</div>\`;
+            lastCat = cat;
+          }
+
+          container.innerHTML += \`
+            <div class="seller-box">
+              <div class="seller-name">\${name}</div>
+              <div class="rate">\${rate}</div>
+              <a class="contact-button" href="\${link}" target="_blank"><span>CONTACT</span></a>
+            </div>\`;
+        });
+      })
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>
